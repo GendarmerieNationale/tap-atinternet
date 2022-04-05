@@ -1,0 +1,136 @@
+{
+  "streams": [
+    {
+      "tap_stream_id": "visits",
+      "replication_method": "INCREMENTAL",
+      "key_properties": [
+        "date",
+        "m_visits",
+        "date",
+        "geo_city",
+        "geo_country",
+        "geo_region",
+        "page_full_name"
+      ],
+      "schema": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "type": [
+              "string"
+            ]
+          },
+          "geo_city": {
+            "type": [
+              "string"
+            ]
+          },
+          "geo_country": {
+            "type": [
+              "string"
+            ]
+          },
+          "geo_region": {
+            "type": [
+              "string"
+            ]
+          },
+          "page_full_name": {
+            "type": [
+              "string"
+            ]
+          },
+          "m_visits": {
+            "type": [
+              "integer"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "stream": "visits",
+      "metadata": [
+        {
+          "breadcrumb": [
+            "properties",
+            "date"
+          ],
+          "metadata": {
+            "inclusion": "automatic",
+            "selected": true
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "geo_city"
+          ],
+          "metadata": {
+            "inclusion": "automatic",
+            "selected": true
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "geo_country"
+          ],
+          "metadata": {
+            "inclusion": "automatic",
+            "selected": true
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "geo_region"
+          ],
+          "metadata": {
+            "inclusion": "automatic",
+            "selected": true
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "page_full_name"
+          ],
+          "metadata": {
+            "inclusion": "automatic",
+            "selected": true
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic",
+            "selected": true
+          }
+        },
+        {
+          "breadcrumb": [],
+          "metadata": {
+            "inclusion": "available",
+            "selected": true,
+            "table-key-properties": [
+              "date",
+              "m_visits",
+              "date",
+              "geo_city",
+              "geo_country",
+              "geo_region",
+              "page_full_name"
+            ],
+            "replication-method": "INCREMENTAL",
+            "replication-key": "date"
+          }
+        }
+      ],
+      "selected": true,
+      "replication_key": "date"
+    }
+  ]
+}

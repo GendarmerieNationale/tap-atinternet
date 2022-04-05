@@ -1,0 +1,7 @@
+{
+  "api_key": "AT_INTERNET_API_KEY",
+  "secret_key": "AT_INTERNET_API_SECRET_KEY",
+  "site_id": 111111,
+  "start_date": "2020-12-29",
+  "max_results": 5000
+}

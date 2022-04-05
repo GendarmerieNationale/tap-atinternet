@@ -1,0 +1,35 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: 35873900-0b4a-4d1c-a1b7-02ca502d2ea9
+plugins:
+  extractors:
+  - name: tap-atinternet
+    namespace: tap_atinternet
+    pip_url: -e .
+    capabilities:
+    - state
+    - catalog
+    - discover
+    settings:
+    - name: api_key
+      kind: password
+    - name: secret_key
+      kind: password
+    - name: site_id
+      kind: integer
+    - name: start_date
+      kind: date_iso8601
+    - name: max_results
+      kind: integer
+    - name: filter_str
+      kind: string
+    config:
+      start_date: 2022-04-01
+#      Comment out below if you want FULL_TABLE replication instead
+    metadata:
+      visits:
+        replication-method: INCREMENTAL
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
