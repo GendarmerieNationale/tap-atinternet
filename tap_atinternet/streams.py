@@ -28,4 +28,4 @@ class VisitsStream(ATInternetStream):
     properties = ["date", "geo_city", "geo_country", "geo_region", "page_full_name"]
 
     # composite primary key
-    primary_keys = ["date"] + metrics + properties
+    primary_keys = metrics + properties
