@@ -1,23 +1,28 @@
 """REST client handling, including ATInternetStream base class."""
 import json
 import logging
-from datetime import datetime, timedelta
-from typing import Any, Dict, Optional
-
 import requests
+from datetime import datetime, timedelta
+from typing import Any, Dict, Optional, List
+from singer_sdk import typing as th  # JSON schema typing helpers
 from singer_sdk.streams import RESTStream
+
+from tap_atinternet.utils import property_list_to_str
 
 
 class ATInternetStream(RESTStream):
-    """ATInternet stream class."""
+    """
+    ATInternet stream class.
 
-    url_base = "https://api.atinternet.io/v3/data/getData"
-    records_jsonpath = "$.DataFeed.Rows[*]"
-    rest_method = "POST"
+    API documentation:
+     - https://developers.atinternet-solutions.com/data-api-en/reporting-api-v3/getting-started/how-does-it-work/
+     - https://management.atinternet-solutions.com/#/data-model/properties (metrics and properties doc)
+    """
 
-    # to be replaced by the actual VisitsStream class
-    metrics = ["m_visits"]
-    properties = ["site_id"]
+    # --- AT Internet specific attributes and methods
+    # To be replaced by the child Stream class
+    metrics: th.PropertiesList
+    properties: th.PropertiesList
 
     # AT Internet date format utilities
     date_format = "%Y-%m-%d"
@@ -27,6 +32,11 @@ class ATInternetStream(RESTStream):
 
     def str_to_date(self, date):
         return datetime.strptime(date, self.date_format)
+
+    # --- Singer SDK attributes and methods
+    url_base = "https://api.atinternet.io/v3/data/getData"
+    records_jsonpath = "$.DataFeed.Rows[*]"
+    rest_method = "POST"
 
     @property
     def http_headers(self) -> dict:
@@ -127,7 +137,8 @@ class ATInternetStream(RESTStream):
 
         return {
             "space": {"s": [self.config.get("site_id")]},
-            "columns": self.metrics + self.properties,
+            "columns": property_list_to_str(self.metrics)
+            + property_list_to_str(self.properties),
             "period": {"p1": [{"type": "D", "start": day, "end": day}]},
             "filter": filter_dict,
             # ATInternet requires you to sort by something...
