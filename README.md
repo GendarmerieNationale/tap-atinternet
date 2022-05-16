@@ -32,7 +32,7 @@ tap-atinternet --about
 It can be used with both `FULL_TABLE` or `INCREMENTAL` replication methods, to be specified in the tap metadata 
 ([how to do it with meltano](https://docs.meltano.com/concepts/plugins#metadata-extra)).
 
-**Note: ⚠️ in incremental mode, the tap will produce duplicate records.**
+**Note: ⚠️ in incremental mode, the tap may produce duplicate records.**
 With incremental sync (and `date` as the `replication_key`), the tap will use the last state value instead of the 
 `start_date` specified in the config, and will extract data for that date even though it has already been extracted last time.
 
@@ -52,11 +52,9 @@ if last time you extracted data up to 2022-04-05 (_included_). Next time you cal
 (and with the same `job_id` if using meltano), the extraction will start from 2022-04-05 (_included_), which will 
 likely lead to duplicate records for this date.
 
-According to the meltano team (see [issue](https://gitlab.com/meltano/meltano/-/issues/2504)), 
-this is expected, and you can deal with it by removing the potential duplicates in the Transform layer, e.g. with dbt:
-> Singer does support incremental replication that append instead of upsert - but the promise is that each
-> row arrives "at least once" and not necessarily "exactly once".
-> I've dealt with this in the past at the dbt layer with much success.
+This may be a problem with some targets (e.g. `target-jsonl`, in this case see [issue](https://gitlab.com/meltano/meltano/-/issues/2504)),
+but if you are working with `target-postgres` it should work fine. Thanks to the `primary_keys` defined in `streams.py`,
+in case of duplicate records the target db will know when to insert a new record or simply update the previous one.
 
 ## Usage
 
@@ -125,7 +123,6 @@ meltano elt tap-atinternet target-jsonl
 
 See the [dev guide](https://sdk.meltano.com/en/latest/dev_guide.html) for more instructions on how to use the SDK to 
 develop your own taps and targets.
-
 
 ## Contact
 Gendarmerie Nationale, cyberimpact@gendarmerie.interieur.gouv.fr
