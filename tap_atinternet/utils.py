@@ -42,5 +42,24 @@ def get_start_end_days(year: int, month: int) -> Tuple[datetime.date, datetime.d
 
     # last day of current month
     end_date = datetime.date(next_year, next_month, 1) - datetime.timedelta(days=1)
-    end_date = min(end_date, datetime.date.today())  # AT Internet does not accept future dates in the filter range
+    end_date = min(
+        end_date, datetime.date.today()
+    )  # AT Internet does not accept future dates in the filter range
     return start_date, end_date
+
+
+# also possible with datetime.strptime, but requires changing the locale..
+month_str_to_int = {
+    "January": 1,
+    "February": 2,
+    "March": 3,
+    "April": 4,
+    "May": 5,
+    "June": 6,
+    "July": 7,
+    "August": 8,
+    "September": 9,
+    "October": 10,
+    "November": 11,
+    "December": 12,
+}

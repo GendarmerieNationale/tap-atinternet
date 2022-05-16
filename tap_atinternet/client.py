@@ -1,16 +1,17 @@
 """REST client handling, including ATInternetStream base class."""
+import datetime
 import json
 import logging
+from typing import Any, Dict, Optional
+
 import requests
-import datetime
-from typing import Any, Dict, Optional, List, Tuple
 from singer_sdk import typing as th  # JSON schema typing helpers
 from singer_sdk.streams import RESTStream
 
 from tap_atinternet.utils import (
     property_list_to_str,
     get_start_end_days,
-    get_next_month,
+    get_next_month, month_str_to_int,
 )
 
 
@@ -159,6 +160,11 @@ class ATInternetStream(RESTStream):
             "page-num": page_num,
         }
 
-    # def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
-    #     # depending on the replication key, add month+year to the record
-    # pass
+    def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+        if "date" not in row:
+            # for some streams, we request monthly data from the API, but we still want a 'date' column in our data
+            # -> use the first day of the month
+            year = row["date_year"]
+            month = month_str_to_int[row["date_month"]]
+            row["date"] = self.date_to_str(datetime.date(year, month, 1))
+        return row

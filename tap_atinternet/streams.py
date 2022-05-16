@@ -52,7 +52,13 @@ class GeoVisitsStream(ATInternetStream):
 
     name = "geo_visits"
     path = ""
-    replication_key = "year_month"
-    schema = merge_properties_lists(metrics, properties).to_dict()
+    replication_key = "date"
+    schema = merge_properties_lists(
+        metrics,
+        properties,
+        # we don't want to use the date in AT Internet API requests, but we still want to (manually) save it in
+        # the records, to allow for a "date" replication key
+        th.PropertiesList(th.Property("date", th.DateType, required=True)),
+    ).to_dict()
     # composite primary key
     primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)

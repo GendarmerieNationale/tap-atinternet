@@ -6,7 +6,7 @@ from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
 from tap_atinternet.client import ATInternetStream
-from tap_atinternet.streams import HourlyVisitsStream
+from tap_atinternet.streams import HourlyVisitsStream, GeoVisitsStream
 
 
 class TapATInternet(Tap):
@@ -53,4 +53,4 @@ class TapATInternet(Tap):
 
     def discover_streams(self) -> List[ATInternetStream]:
         """Return a list of discovered streams."""
-        return [HourlyVisitsStream(tap=self)]
+        return [HourlyVisitsStream(tap=self), GeoVisitsStream(tap=self)]
