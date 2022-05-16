@@ -62,3 +62,78 @@ class GeoVisitsStream(ATInternetStream):
     ).to_dict()
     # composite primary key
     primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)
+
+
+class PagesVisitsStream(ATInternetStream):
+    """
+    Visits per page and per month
+    """
+
+    metrics = SHARED_METRICS
+    properties = th.PropertiesList(
+        th.Property("date_year", th.IntegerType, required=True),
+        th.Property("date_month", th.StringType, required=True),
+        th.Property("page", th.StringType, required=True),
+        th.Property("page_full_name", th.StringType, required=True),
+    )
+
+    name = "pages_visits"
+    path = ""
+    replication_key = "date"
+    schema = merge_properties_lists(
+        metrics,
+        properties,
+        th.PropertiesList(th.Property("date", th.DateType, required=True)),
+    ).to_dict()
+    primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)
+
+
+class SourcesVisitsStream(ATInternetStream):
+    """
+    Visits per traffic source (social network, search engine, etc) and per month
+    """
+
+    metrics = SHARED_METRICS
+    properties = th.PropertiesList(
+        th.Property("date_year", th.IntegerType, required=True),
+        th.Property("date_month", th.StringType, required=True),
+        th.Property("src", th.StringType, required=True),
+        th.Property("src_detail", th.StringType, required=True),
+        th.Property("src_referrer_url", th.StringType, required=True),
+    )
+
+    name = "sources_visits"
+    path = ""
+    replication_key = "date"
+    schema = merge_properties_lists(
+        metrics,
+        properties,
+        th.PropertiesList(th.Property("date", th.DateType, required=True)),
+    ).to_dict()
+    primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)
+
+
+class DevicesVisitsStream(ATInternetStream):
+    """
+    Visits per device (OS, mobile or desktop, language, etc) and per month
+    """
+
+    metrics = SHARED_METRICS
+    properties = th.PropertiesList(
+        th.Property("date_year", th.IntegerType, required=True),
+        th.Property("date_month", th.StringType, required=True),
+        th.Property("device_type", th.StringType, required=True),
+        th.Property("os_group", th.StringType, required=True),
+        th.Property("browser_group", th.StringType, required=True),
+        th.Property("browser_language", th.StringType, required=True),
+    )
+
+    name = "devices_visits"
+    path = ""
+    replication_key = "date"
+    schema = merge_properties_lists(
+        metrics,
+        properties,
+        th.PropertiesList(th.Property("date", th.DateType, required=True)),
+    ).to_dict()
+    primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)

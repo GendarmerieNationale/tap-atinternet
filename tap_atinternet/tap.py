@@ -6,7 +6,13 @@ from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
 from tap_atinternet.client import ATInternetStream
-from tap_atinternet.streams import HourlyVisitsStream, GeoVisitsStream
+from tap_atinternet.streams import (
+    HourlyVisitsStream,
+    GeoVisitsStream,
+    PagesVisitsStream,
+    SourcesVisitsStream,
+    DevicesVisitsStream,
+)
 
 
 class TapATInternet(Tap):
@@ -47,10 +53,16 @@ class TapATInternet(Tap):
             th.StringType,
             default="",
             description="Optional. If not empty, filter and extract only the pages with "
-                        "this string in the 'page_full_name'",
+            "this string in the 'page_full_name'",
         ),
     ).to_dict()
 
     def discover_streams(self) -> List[ATInternetStream]:
         """Return a list of discovered streams."""
-        return [HourlyVisitsStream(tap=self), GeoVisitsStream(tap=self)]
+        return [
+            HourlyVisitsStream(tap=self),
+            GeoVisitsStream(tap=self),
+            PagesVisitsStream(tap=self),
+            SourcesVisitsStream(tap=self),
+            DevicesVisitsStream(tap=self),
+        ]

@@ -1,6 +1,208 @@
 {
   "streams": [
     {
+      "tap_stream_id": "devices_visits",
+      "replication_key": "date",
+      "replication_method": "INCREMENTAL",
+      "key_properties": [
+        "m_visits",
+        "m_unique_visitors",
+        "m_bounces",
+        "m_time_spent_per_visits",
+        "date_year",
+        "date_month",
+        "device_type",
+        "os_group",
+        "browser_group",
+        "browser_language"
+      ],
+      "schema": {
+        "properties": {
+          "m_visits": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_unique_visitors": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_bounces": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_time_spent_per_visits": {
+            "type": [
+              "number"
+            ]
+          },
+          "date_year": {
+            "type": [
+              "integer"
+            ]
+          },
+          "date_month": {
+            "type": [
+              "string"
+            ]
+          },
+          "device_type": {
+            "type": [
+              "string"
+            ]
+          },
+          "os_group": {
+            "type": [
+              "string"
+            ]
+          },
+          "browser_group": {
+            "type": [
+              "string"
+            ]
+          },
+          "browser_language": {
+            "type": [
+              "string"
+            ]
+          },
+          "date": {
+            "format": "date",
+            "type": [
+              "string"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "stream": "devices_visits",
+      "metadata": [
+        {
+          "breadcrumb": [
+            "properties",
+            "m_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_unique_visitors"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_bounces"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_time_spent_per_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date_year"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date_month"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "device_type"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "os_group"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "browser_group"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "browser_language"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date"
+          ],
+          "metadata": {
+            "inclusion": "available"
+          }
+        },
+        {
+          "breadcrumb": [],
+          "metadata": {
+            "inclusion": "available",
+            "selected": true,
+            "table-key-properties": [
+              "m_visits",
+              "m_unique_visitors",
+              "m_bounces",
+              "m_time_spent_per_visits",
+              "date_year",
+              "date_month",
+              "device_type",
+              "os_group",
+              "browser_group",
+              "browser_language"
+            ],
+            "valid-replication-keys": [
+              "date"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "tap_stream_id": "geo_visits",
       "replication_key": "date",
       "replication_method": "INCREMENTAL",
@@ -302,6 +504,362 @@
               "m_time_spent_per_visits",
               "date",
               "visit_hour"
+            ],
+            "valid-replication-keys": [
+              "date"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "tap_stream_id": "pages_visits",
+      "replication_key": "date",
+      "replication_method": "INCREMENTAL",
+      "key_properties": [
+        "m_visits",
+        "m_unique_visitors",
+        "m_bounces",
+        "m_time_spent_per_visits",
+        "date_year",
+        "date_month",
+        "page",
+        "page_full_name"
+      ],
+      "schema": {
+        "properties": {
+          "m_visits": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_unique_visitors": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_bounces": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_time_spent_per_visits": {
+            "type": [
+              "number"
+            ]
+          },
+          "date_year": {
+            "type": [
+              "integer"
+            ]
+          },
+          "date_month": {
+            "type": [
+              "string"
+            ]
+          },
+          "page": {
+            "type": [
+              "string"
+            ]
+          },
+          "page_full_name": {
+            "type": [
+              "string"
+            ]
+          },
+          "date": {
+            "format": "date",
+            "type": [
+              "string"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "stream": "pages_visits",
+      "metadata": [
+        {
+          "breadcrumb": [
+            "properties",
+            "m_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_unique_visitors"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_bounces"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_time_spent_per_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date_year"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date_month"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "page"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "page_full_name"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date"
+          ],
+          "metadata": {
+            "inclusion": "available"
+          }
+        },
+        {
+          "breadcrumb": [],
+          "metadata": {
+            "inclusion": "available",
+            "selected": true,
+            "table-key-properties": [
+              "m_visits",
+              "m_unique_visitors",
+              "m_bounces",
+              "m_time_spent_per_visits",
+              "date_year",
+              "date_month",
+              "page",
+              "page_full_name"
+            ],
+            "valid-replication-keys": [
+              "date"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "tap_stream_id": "sources_visits",
+      "replication_key": "date",
+      "replication_method": "INCREMENTAL",
+      "key_properties": [
+        "m_visits",
+        "m_unique_visitors",
+        "m_bounces",
+        "m_time_spent_per_visits",
+        "date_year",
+        "date_month",
+        "src",
+        "src_detail",
+        "src_referrer_url"
+      ],
+      "schema": {
+        "properties": {
+          "m_visits": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_unique_visitors": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_bounces": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_time_spent_per_visits": {
+            "type": [
+              "number"
+            ]
+          },
+          "date_year": {
+            "type": [
+              "integer"
+            ]
+          },
+          "date_month": {
+            "type": [
+              "string"
+            ]
+          },
+          "src": {
+            "type": [
+              "string"
+            ]
+          },
+          "src_detail": {
+            "type": [
+              "string"
+            ]
+          },
+          "src_referrer_url": {
+            "type": [
+              "string"
+            ]
+          },
+          "date": {
+            "format": "date",
+            "type": [
+              "string"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "stream": "sources_visits",
+      "metadata": [
+        {
+          "breadcrumb": [
+            "properties",
+            "m_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_unique_visitors"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_bounces"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_time_spent_per_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date_year"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date_month"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "src"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "src_detail"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "src_referrer_url"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date"
+          ],
+          "metadata": {
+            "inclusion": "available"
+          }
+        },
+        {
+          "breadcrumb": [],
+          "metadata": {
+            "inclusion": "available",
+            "selected": true,
+            "table-key-properties": [
+              "m_visits",
+              "m_unique_visitors",
+              "m_bounces",
+              "m_time_spent_per_visits",
+              "date_year",
+              "date_month",
+              "src",
+              "src_detail",
+              "src_referrer_url"
             ],
             "valid-replication-keys": [
               "date"
