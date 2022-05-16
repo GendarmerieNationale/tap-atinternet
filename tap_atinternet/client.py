@@ -2,12 +2,16 @@
 import json
 import logging
 import requests
-from datetime import datetime, timedelta
-from typing import Any, Dict, Optional, List
+import datetime
+from typing import Any, Dict, Optional, List, Tuple
 from singer_sdk import typing as th  # JSON schema typing helpers
 from singer_sdk.streams import RESTStream
 
-from tap_atinternet.utils import property_list_to_str
+from tap_atinternet.utils import (
+    property_list_to_str,
+    get_start_end_days,
+    get_next_month,
+)
 
 
 class ATInternetStream(RESTStream):
@@ -27,11 +31,11 @@ class ATInternetStream(RESTStream):
     # AT Internet date format utilities
     date_format = "%Y-%m-%d"
 
-    def date_to_str(self, date):
-        return datetime.strftime(date, self.date_format)
+    def date_to_str(self, date) -> str:
+        return datetime.datetime.strftime(date, self.date_format)
 
-    def str_to_date(self, date):
-        return datetime.strptime(date, self.date_format)
+    def str_to_date(self, date) -> datetime.datetime:
+        return datetime.datetime.strptime(date, self.date_format)
 
     # --- Singer SDK attributes and methods
     url_base = "https://api.atinternet.io/v3/data/getData"
@@ -52,42 +56,38 @@ class ATInternetStream(RESTStream):
         self, response: requests.Response, previous_token: Optional[dict]
     ) -> Optional[dict]:
         """
-        Return a token for identifying next day and next page.
+        Return a token for identifying next (year,month) tuple and next page.
 
-        If the previous day and page is still returning data, try using the same day and the next page.
-        If there is no more data (-> no more pages) for the previous day, try using the next day.
-        If the next day is greater or equal than today, it means there is no more data to sync
+        If the previous (year,month) and page is still returning data, try using the same (year,month) and the next page.
+        If there is no more data (-> no more pages) for the previous (year,month), try using the next (year,month).
+        If the next (year,month) is greater or equal than today, it means there is no more data to sync
             -> return None to stop the loop
         """
         # Get the date of the previous request
         request_body_json = json.loads(response.request.body)
-        previous_day = request_body_json["period"]["p1"][0]["start"]
-        assert (
-            previous_day == request_body_json["period"]["p1"][0]["end"]
-        ), "AT Internet API requests should have the same start and end date"
-        if previous_token:
-            assert previous_day == previous_token["day"]
+        previous_start_date = self.str_to_date(
+            request_body_json["period"]["p1"][0]["start"]
+        )
 
-        # Find out if the previous day is still returning data (which means it may have pages left)
+        # Find out if the previous month is still returning data (which means it may have pages left)
         data_feed = response.json()["DataFeed"]
         rows = data_feed["Rows"]
         if len(rows) > 0:
             # get the page-num of the previous request
             previous_page = request_body_json["page-num"]
             return {
-                "day": previous_day,
+                "year_month": (previous_start_date.year, previous_start_date.month),
                 "page_num": previous_page + 1,
             }
 
-        # Find out if we should use the next day
-        previous_day = self.str_to_date(previous_day)
-        next_day = previous_day + timedelta(days=1)
-        if next_day < datetime.now():
-            # Note: we choose not to sync today's data for now (only up to yesterday, to have full days)
-            next_day = self.date_to_str(next_day)
-            logging.info(f"Syncing date: {next_day}")
+        # Find out if we should use the next month
+        next_year, next_month = get_next_month(
+            previous_start_date.year, previous_start_date.month
+        )
+        if datetime.date(next_year, next_month, 1) <= datetime.date.today():
+            logging.info(f"Syncing data for month: {next_month}/{next_year}")
             return {
-                "day": next_day,
+                "year_month": (next_year, next_month),
                 "page_num": 1,
             }
         return None
@@ -122,10 +122,14 @@ class ATInternetStream(RESTStream):
         if next_page_token is None:
             # `get_starting_replication_key_value()` returns the stream replication key
             # (useful for incremental sync) or, if no state was passed, returns the 'start_date' in config
-            day = self.get_starting_replication_key_value(context)
+            start_date = self.str_to_date(
+                self.get_starting_replication_key_value(context)
+            )
+            _, end_date = get_start_end_days(start_date.year, start_date.month)
             page_num = 1
         else:
-            day = next_page_token["day"]
+            year, month = next_page_token["year_month"]
+            start_date, end_date = get_start_end_days(year, month)
             page_num = next_page_token["page_num"]
 
         filter_dict = {}
@@ -139,10 +143,22 @@ class ATInternetStream(RESTStream):
             "space": {"s": [self.config.get("site_id")]},
             "columns": property_list_to_str(self.metrics)
             + property_list_to_str(self.properties),
-            "period": {"p1": [{"type": "D", "start": day, "end": day}]},
+            "period": {
+                "p1": [
+                    {
+                        "type": "D",
+                        "start": self.date_to_str(start_date),
+                        "end": self.date_to_str(end_date),
+                    }
+                ]
+            },
             "filter": filter_dict,
             # ATInternet requires you to sort by something...
             "sort": ["-m_visits"],
             "max-results": self.config.get("max_results"),
             "page-num": page_num,
         }
+
+    # def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+    #     # depending on the replication key, add month+year to the record
+    # pass
