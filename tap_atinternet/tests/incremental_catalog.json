@@ -1,26 +1,48 @@
 {
   "streams": [
     {
-      "tap_stream_id": "visits",
+      "tap_stream_id": "geo_visits",
+      "replication_key": "date",
       "replication_method": "INCREMENTAL",
       "key_properties": [
-        "date",
         "m_visits",
-        "date",
-        "geo_city",
+        "m_unique_visitors",
+        "m_bounces",
+        "m_time_spent_per_visits",
+        "date_year",
+        "date_month",
         "geo_country",
         "geo_region",
-        "page_full_name"
+        "geo_city"
       ],
       "schema": {
         "properties": {
-          "date": {
-            "format": "date",
+          "m_visits": {
             "type": [
-              "string"
+              "integer"
             ]
           },
-          "geo_city": {
+          "m_unique_visitors": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_bounces": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_time_spent_per_visits": {
+            "type": [
+              "number"
+            ]
+          },
+          "date_year": {
+            "type": [
+              "integer"
+            ]
+          },
+          "date_month": {
             "type": [
               "string"
             ]
@@ -35,39 +57,74 @@
               "string"
             ]
           },
-          "page_full_name": {
+          "geo_city": {
             "type": [
               "string"
             ]
           },
-          "m_visits": {
+          "date": {
+            "format": "date",
             "type": [
-              "integer"
+              "string"
             ]
           }
         },
         "type": "object"
       },
-      "stream": "visits",
+      "stream": "geo_visits",
       "metadata": [
         {
           "breadcrumb": [
             "properties",
-            "date"
+            "m_visits"
           ],
           "metadata": {
-            "inclusion": "automatic",
-            "selected": true
+            "inclusion": "automatic"
           }
         },
         {
           "breadcrumb": [
             "properties",
-            "geo_city"
+            "m_unique_visitors"
           ],
           "metadata": {
-            "inclusion": "automatic",
-            "selected": true
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_bounces"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_time_spent_per_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date_year"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date_month"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
           }
         },
         {
@@ -76,8 +133,7 @@
             "geo_country"
           ],
           "metadata": {
-            "inclusion": "automatic",
-            "selected": true
+            "inclusion": "automatic"
           }
         },
         {
@@ -86,28 +142,25 @@
             "geo_region"
           ],
           "metadata": {
-            "inclusion": "automatic",
-            "selected": true
+            "inclusion": "automatic"
           }
         },
         {
           "breadcrumb": [
             "properties",
-            "page_full_name"
+            "geo_city"
           ],
           "metadata": {
-            "inclusion": "automatic",
-            "selected": true
+            "inclusion": "automatic"
           }
         },
         {
           "breadcrumb": [
             "properties",
-            "m_visits"
+            "date"
           ],
           "metadata": {
-            "inclusion": "automatic",
-            "selected": true
+            "inclusion": "available"
           }
         },
         {
@@ -116,21 +169,146 @@
             "inclusion": "available",
             "selected": true,
             "table-key-properties": [
-              "date",
               "m_visits",
-              "date",
-              "geo_city",
+              "m_unique_visitors",
+              "m_bounces",
+              "m_time_spent_per_visits",
+              "date_year",
+              "date_month",
               "geo_country",
               "geo_region",
-              "page_full_name"
+              "geo_city"
             ],
-            "replication-method": "INCREMENTAL",
-            "replication-key": "date"
+            "valid-replication-keys": [
+              "date"
+            ]
           }
         }
+      ]
+    },
+    {
+      "tap_stream_id": "hourly_visits",
+      "replication_key": "date",
+      "replication_method": "INCREMENTAL",
+      "key_properties": [
+        "m_visits",
+        "m_unique_visitors",
+        "m_bounces",
+        "m_time_spent_per_visits",
+        "date",
+        "visit_hour"
       ],
-      "selected": true,
-      "replication_key": "date"
+      "schema": {
+        "properties": {
+          "m_visits": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_unique_visitors": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_bounces": {
+            "type": [
+              "integer"
+            ]
+          },
+          "m_time_spent_per_visits": {
+            "type": [
+              "number"
+            ]
+          },
+          "date": {
+            "format": "date",
+            "type": [
+              "string"
+            ]
+          },
+          "visit_hour": {
+            "type": [
+              "integer"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "stream": "hourly_visits",
+      "metadata": [
+        {
+          "breadcrumb": [
+            "properties",
+            "m_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_unique_visitors"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_bounces"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "m_time_spent_per_visits"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "date"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [
+            "properties",
+            "visit_hour"
+          ],
+          "metadata": {
+            "inclusion": "automatic"
+          }
+        },
+        {
+          "breadcrumb": [],
+          "metadata": {
+            "inclusion": "available",
+            "selected": true,
+            "table-key-properties": [
+              "m_visits",
+              "m_unique_visitors",
+              "m_bounces",
+              "m_time_spent_per_visits",
+              "date",
+              "visit_hour"
+            ],
+            "valid-replication-keys": [
+              "date"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

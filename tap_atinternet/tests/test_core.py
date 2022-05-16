@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import jsonschema
+import pytest
 from singer_sdk.testing import get_standard_tap_tests
 
 from tap_atinternet.tap import TapATInternet
@@ -18,22 +19,28 @@ with open(Path(__file__).parent / "incremental_catalog.json") as f:
     INCREMENTAL_CATALOG = json.load(f)
 
 
+@pytest.fixture
+def configs():
+    return [SAMPLE_CONFIG_GN, SAMPLE_CONFIG_SP]
+
+
 # Run standard built-in tap tests from the SDK:
-def test_standard_tap_tests_gn_config():
+def test_standard_tap_tests(configs):
     """Run standard tap tests from the SDK."""
-    tests = get_standard_tap_tests(TapATInternet, config=SAMPLE_CONFIG_GN)
-    for test in tests:
-        test()
+    for config in configs:
+        tests = get_standard_tap_tests(TapATInternet, config=config)
+        for test in tests:
+            test()
 
 
-def test_standard_tap_tests_sp_config():
-    """Run standard tap tests from the SDK."""
-    tests = get_standard_tap_tests(TapATInternet, config=SAMPLE_CONFIG_SP)
-    for test in tests:
-        test()
+# Additional tests
+def test_incremental_sync(configs):
+    for config in configs:
+        tap = TapATInternet(config=config, catalog=INCREMENTAL_CATALOG)
+        tap.run_connection_test()
 
 
-def validate_record_schema(config):
+def test_record_schema(configs):
     """
     Validate the tap records against the provided schema.
 
@@ -43,46 +50,14 @@ def validate_record_schema(config):
     Note: During ELT pipelines, target can be configured to validate the input records against
     the schema, but this is not an obligation.
     """
-    tap = TapATInternet(config=config)
-    streams = tap.discover_streams()
+    for config in configs:
+        tap = TapATInternet(config=config)
+        tap.run_connection_test()  # start with this to initialize stream_state
 
-    for stream in streams:
-        records_iterator = stream.get_records(context=None)
-        first_record = next(records_iterator)
-        print(first_record)
-        print(stream.schema)
-        try:
+        streams = tap.discover_streams()
+        for stream in streams:
+            records_iterator = stream.get_records(context=None)
+            first_record = next(records_iterator)
+            print('Record:\n', first_record)
+            print('Schema:\n', stream.schema)
             jsonschema.validate(instance=first_record, schema=stream.schema)
-        except AssertionError:
-            raise AssertionError(
-                f"Could not validate schema for stream {stream}.\n"
-                f"Stream schema:\n"
-                f"{stream.schema}\n"
-                f"First record:\n"
-                f"{first_record}"
-            )
-
-
-def test_record_schema_gn():
-    validate_record_schema(SAMPLE_CONFIG_GN)
-
-
-def test_record_schema_sp():
-    validate_record_schema(SAMPLE_CONFIG_SP)
-
-
-def run_incremental_sync(config):
-    tap = TapATInternet(config=config, catalog=INCREMENTAL_CATALOG)
-    tap.run_connection_test()
-
-
-def test_incremental_sync_gn():
-    run_incremental_sync(SAMPLE_CONFIG_GN)
-
-
-def test_incremental_sync_sp():
-    run_incremental_sync(SAMPLE_CONFIG_SP)
-
-
-if __name__ == "__main__":
-    test_incremental_sync_gn()
