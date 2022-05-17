@@ -24,7 +24,7 @@ plugins:
     - name: filter_str
       kind: string
     config:
-      start_date: 2022-04-01
+      start_date: 2022-05-01
 #      Comment out below if you want FULL_TABLE replication instead
     metadata:
       visits:

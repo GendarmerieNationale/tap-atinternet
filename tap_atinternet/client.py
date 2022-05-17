@@ -11,7 +11,8 @@ from singer_sdk.streams import RESTStream
 from tap_atinternet.utils import (
     property_list_to_str,
     get_start_end_days,
-    get_next_month, month_str_to_int,
+    get_next_month,
+    month_str_to_int,
 )
 
 
@@ -161,6 +162,10 @@ class ATInternetStream(RESTStream):
         }
 
     def post_process(self, row: dict, context: Optional[dict] = None) -> Optional[dict]:
+        for k, v in row.items():
+            if v == "N/A":
+                # "N/A" does not work as a null value (e.g. when casting to integers)
+                row[k] = None
         if "date" not in row:
             # for some streams, we request monthly data from the API, but we still want a 'date' column in our data
             # -> use the first day of the month

@@ -22,7 +22,8 @@ class HourlyVisitsStream(ATInternetStream):
     metrics = SHARED_METRICS
     properties = th.PropertiesList(
         th.Property("date", th.DateType, required=True),
-        th.Property("visit_hour", th.IntegerType, required=True),
+        # visit_hour can be "N/A" in some cases (when m_visits=0 but m_unique_visitors is not)
+        th.Property("visit_hour", th.IntegerType, required=False),
     )
 
     name = "hourly_visits"
@@ -45,9 +46,9 @@ class GeoVisitsStream(ATInternetStream):
     properties = th.PropertiesList(
         th.Property("date_year", th.IntegerType, required=True),
         th.Property("date_month", th.StringType, required=True),
-        th.Property("geo_country", th.StringType, required=True),
-        th.Property("geo_region", th.StringType, required=True),
-        th.Property("geo_city", th.StringType, required=True),
+        th.Property("geo_country", th.StringType, required=False),
+        th.Property("geo_region", th.StringType, required=False),
+        th.Property("geo_city", th.StringType, required=False),
     )
 
     name = "geo_visits"
@@ -73,8 +74,8 @@ class PagesVisitsStream(ATInternetStream):
     properties = th.PropertiesList(
         th.Property("date_year", th.IntegerType, required=True),
         th.Property("date_month", th.StringType, required=True),
-        th.Property("page", th.StringType, required=True),
-        th.Property("page_full_name", th.StringType, required=True),
+        th.Property("page", th.StringType, required=False),
+        th.Property("page_full_name", th.StringType, required=False),
     )
 
     name = "pages_visits"
@@ -97,9 +98,9 @@ class SourcesVisitsStream(ATInternetStream):
     properties = th.PropertiesList(
         th.Property("date_year", th.IntegerType, required=True),
         th.Property("date_month", th.StringType, required=True),
-        th.Property("src", th.StringType, required=True),
-        th.Property("src_detail", th.StringType, required=True),
-        th.Property("src_referrer_url", th.StringType, required=True),
+        th.Property("src", th.StringType, required=False),
+        th.Property("src_detail", th.StringType, required=False),
+        th.Property("src_referrer_url", th.StringType, required=False),
     )
 
     name = "sources_visits"
@@ -122,10 +123,10 @@ class DevicesVisitsStream(ATInternetStream):
     properties = th.PropertiesList(
         th.Property("date_year", th.IntegerType, required=True),
         th.Property("date_month", th.StringType, required=True),
-        th.Property("device_type", th.StringType, required=True),
-        th.Property("os_group", th.StringType, required=True),
-        th.Property("browser_group", th.StringType, required=True),
-        th.Property("browser_language", th.StringType, required=True),
+        th.Property("device_type", th.StringType, required=False),
+        th.Property("os_group", th.StringType, required=False),
+        th.Property("browser_group", th.StringType, required=False),
+        th.Property("browser_language", th.StringType, required=False),
     )
 
     name = "devices_visits"
