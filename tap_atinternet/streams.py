@@ -22,8 +22,8 @@ class HourlyVisitsStream(ATInternetStream):
     metrics = SHARED_METRICS
     properties = th.PropertiesList(
         th.Property("date", th.DateType, required=True),
-        # visit_hour can be "N/A" in some cases (when m_visits=0 but m_unique_visitors is not)
-        th.Property("visit_hour", th.IntegerType, required=False),
+        # ⚠️ visit_hour can be "N/A" in some cases, this will be replaced by -1 in ATInternetStream.post_process
+        th.Property("visit_hour", th.IntegerType, required=True),
     )
 
     name = "hourly_visits"
@@ -34,7 +34,7 @@ class HourlyVisitsStream(ATInternetStream):
     replication_key = "date"
     schema = merge_properties_lists(metrics, properties).to_dict()
     # composite primary key
-    primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)
+    primary_keys = property_list_to_str(properties)
 
 
 class GeoVisitsStream(ATInternetStream):
@@ -46,9 +46,9 @@ class GeoVisitsStream(ATInternetStream):
     properties = th.PropertiesList(
         th.Property("date_year", th.IntegerType, required=True),
         th.Property("date_month", th.StringType, required=True),
-        th.Property("geo_country", th.StringType, required=False),
-        th.Property("geo_region", th.StringType, required=False),
-        th.Property("geo_city", th.StringType, required=False),
+        th.Property("geo_country", th.StringType, required=True),
+        th.Property("geo_region", th.StringType, required=True),
+        th.Property("geo_city", th.StringType, required=True),
     )
 
     name = "geo_visits"
@@ -61,8 +61,7 @@ class GeoVisitsStream(ATInternetStream):
         # the records, to allow for a "date" replication key
         th.PropertiesList(th.Property("date", th.DateType, required=True)),
     ).to_dict()
-    # composite primary key
-    primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)
+    primary_keys = property_list_to_str(properties)
 
 
 class PagesVisitsStream(ATInternetStream):
@@ -74,8 +73,8 @@ class PagesVisitsStream(ATInternetStream):
     properties = th.PropertiesList(
         th.Property("date_year", th.IntegerType, required=True),
         th.Property("date_month", th.StringType, required=True),
-        th.Property("page", th.StringType, required=False),
-        th.Property("page_full_name", th.StringType, required=False),
+        th.Property("page", th.StringType, required=True),
+        th.Property("page_full_name", th.StringType, required=True),
     )
 
     name = "pages_visits"
@@ -86,7 +85,7 @@ class PagesVisitsStream(ATInternetStream):
         properties,
         th.PropertiesList(th.Property("date", th.DateType, required=True)),
     ).to_dict()
-    primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)
+    primary_keys = property_list_to_str(properties)
 
 
 class SourcesVisitsStream(ATInternetStream):
@@ -98,9 +97,9 @@ class SourcesVisitsStream(ATInternetStream):
     properties = th.PropertiesList(
         th.Property("date_year", th.IntegerType, required=True),
         th.Property("date_month", th.StringType, required=True),
-        th.Property("src", th.StringType, required=False),
-        th.Property("src_detail", th.StringType, required=False),
-        th.Property("src_referrer_url", th.StringType, required=False),
+        th.Property("src", th.StringType, required=True),
+        th.Property("src_detail", th.StringType, required=True),
+        th.Property("src_referrer_url", th.StringType, required=True),
     )
 
     name = "sources_visits"
@@ -111,7 +110,7 @@ class SourcesVisitsStream(ATInternetStream):
         properties,
         th.PropertiesList(th.Property("date", th.DateType, required=True)),
     ).to_dict()
-    primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)
+    primary_keys = property_list_to_str(properties)
 
 
 class DevicesVisitsStream(ATInternetStream):
@@ -123,10 +122,10 @@ class DevicesVisitsStream(ATInternetStream):
     properties = th.PropertiesList(
         th.Property("date_year", th.IntegerType, required=True),
         th.Property("date_month", th.StringType, required=True),
-        th.Property("device_type", th.StringType, required=False),
-        th.Property("os_group", th.StringType, required=False),
-        th.Property("browser_group", th.StringType, required=False),
-        th.Property("browser_language", th.StringType, required=False),
+        th.Property("device_type", th.StringType, required=True),
+        th.Property("os_group", th.StringType, required=True),
+        th.Property("browser_group", th.StringType, required=True),
+        th.Property("browser_language", th.StringType, required=True),
     )
 
     name = "devices_visits"
@@ -137,4 +136,4 @@ class DevicesVisitsStream(ATInternetStream):
         properties,
         th.PropertiesList(th.Property("date", th.DateType, required=True)),
     ).to_dict()
-    primary_keys = property_list_to_str(metrics) + property_list_to_str(properties)
+    primary_keys = property_list_to_str(properties)
