@@ -25,7 +25,6 @@ plugins:
       kind: string
     config:
       start_date: 2022-05-01
-#      Comment out below if you want FULL_TABLE replication instead
     metadata:
       visits:
         replication-method: INCREMENTAL
@@ -33,3 +32,10 @@ plugins:
   - name: target-jsonl
     variant: andyh1203
     pip_url: target-jsonl
+  - name: target-postgres
+    variant: transferwise
+    pip_url: pipelinewise-target-postgres
+    config:
+      user: postgres
+      password: 'NO_PASSWORD'
+      dbname: test
