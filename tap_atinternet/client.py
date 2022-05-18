@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional
 
 import requests
 from singer_sdk import typing as th  # JSON schema typing helpers
+from singer_sdk.exceptions import FatalAPIError, RetriableAPIError
 from singer_sdk.streams import RESTStream
 
 from tap_atinternet.utils import (
@@ -173,3 +174,22 @@ class ATInternetStream(RESTStream):
             month = month_str_to_int[row["date_month"]]
             row["date"] = self.date_to_str(datetime.date(year, month, 1))
         return row
+
+    def validate_response(self, response: requests.Response) -> None:
+        """
+        Override the parent method to give more details on 400 errors, by logging the request body.
+        """
+        if 400 <= response.status_code < 500:
+            msg = (
+                f"{response.status_code} Client Error: "
+                f"{response.reason} for path: {self.path}. "
+                f"Request payload: {response.request.body}"
+            )
+            raise FatalAPIError(msg)
+
+        elif 500 <= response.status_code < 600:
+            msg = (
+                f"{response.status_code} Server Error: "
+                f"{response.reason} for path: {self.path}"
+            )
+            raise RetriableAPIError(msg)
