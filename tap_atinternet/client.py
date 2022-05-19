@@ -31,14 +31,15 @@ class ATInternetStream(RESTStream):
     metrics: th.PropertiesList
     properties: th.PropertiesList
 
+    min_start_date = None
     # AT Internet date format utilities
     date_format = "%Y-%m-%d"
 
     def date_to_str(self, date) -> str:
         return datetime.datetime.strftime(date, self.date_format)
 
-    def str_to_date(self, date) -> datetime.datetime:
-        return datetime.datetime.strptime(date, self.date_format)
+    def str_to_date(self, date) -> datetime.date:
+        return datetime.datetime.strptime(date, self.date_format).date()
 
     # --- Singer SDK attributes and methods
     url_base = "https://api.atinternet.io/v3/data/getData"
@@ -88,7 +89,6 @@ class ATInternetStream(RESTStream):
             previous_start_date.year, previous_start_date.month
         )
         if datetime.date(next_year, next_month, 1) <= datetime.date.today():
-            logging.info(f"Syncing data for month: {next_month}/{next_year}")
             return {
                 "year_month": (next_year, next_month),
                 "page_num": 1,
@@ -125,14 +125,19 @@ class ATInternetStream(RESTStream):
         if next_page_token is None:
             # `get_starting_replication_key_value()` returns the stream replication key
             # (useful for incremental sync) or, if no state was passed, returns the 'start_date' in config
-            start_date = self.str_to_date(
+            self.min_start_date = self.str_to_date(
                 self.get_starting_replication_key_value(context)
             )
-            _, end_date = get_start_end_days(start_date.year, start_date.month)
+            start_date = self.min_start_date
+            _, end_date = get_start_end_days(
+                start_date.year, start_date.month, min_start_date=start_date
+            )
             page_num = 1
         else:
             year, month = next_page_token["year_month"]
-            start_date, end_date = get_start_end_days(year, month)
+            start_date, end_date = get_start_end_days(
+                year, month, min_start_date=self.min_start_date
+            )
             page_num = next_page_token["page_num"]
 
         filter_dict = {}
@@ -142,6 +147,7 @@ class ATInternetStream(RESTStream):
                 "property": {"page_full_name": {"$lk": self.config.get("filter_str")}}
             }
 
+        logging.info(f"INFO DATE: {start_date}/{end_date}")
         return {
             "space": {"s": [self.config.get("site_id")]},
             "columns": property_list_to_str(self.metrics)
