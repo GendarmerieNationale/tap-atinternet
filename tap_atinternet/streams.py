@@ -24,6 +24,7 @@ class HourlyVisitsStream(ATInternetStream):
         th.Property("date", th.DateType, required=True),
         # ⚠️ visit_hour can be "N/A" in some cases, this will be replaced by -1 in ATInternetStream.post_process
         th.Property("visit_hour", th.IntegerType, required=True),
+        th.Property("site_level2", th.StringType, required=True),
     )
 
     name = "hourly_visits"
@@ -75,6 +76,7 @@ class PagesVisitsStream(ATInternetStream):
         th.Property("date_month", th.StringType, required=True),
         th.Property("page", th.StringType, required=True),
         th.Property("page_full_name", th.StringType, required=True),
+        th.Property("site_level2", th.StringType, required=True),
     )
 
     name = "pages_visits"
